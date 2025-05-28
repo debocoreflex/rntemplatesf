@@ -8,7 +8,7 @@ import {
 import styles from './Styles';
 import NavImgButton from './NavImgButton';
 import Field from './Field';
-import storeMgr from './StoreMgr';
+import storeMgr from '../services/store/StoreMgr';
 import { Button } from 'react-native-elements';
 
 const ContactScreen = ({ navigation, route, style }) => {

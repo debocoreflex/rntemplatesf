@@ -24,7 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-import EventEmitter from './events';
+import EventEmitter from '../../views/events';
 import {smartstore, mobilesync, forceUtil} from 'react-native-force';
 
 const registerSoup = forceUtil.promiser(smartstore.registerSoup);

@@ -1,30 +1,18 @@
-import { useState, useEffect } from 'react';
-import StoreMgr from '../../StoreMgr';
+import { useState, useEffect, useCallback } from 'react';
+import StoreMgr from '../services/store/StoreMgr';
 import Contact from '../models/ModelContact';
-
-
 
 export function ContactViewModel() {
   const [contacts, setContacts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [filter, setFilter] = useState('');
 
-  useEffect(() => {
-    StoreMgr.addStoreChangeListener(refreshContacts);
-    refreshContacts();
-
-    return () => {
-      StoreMgr.removeStoreChangeListener(refreshContacts);
-    };
-  }, []);
-
-  function refreshContacts() {
+  const refreshContacts = useCallback(() => {
     setIsLoading(true);
     StoreMgr.searchContacts(
-      Date.now(),  // or a queryId generator
+      Date.now(), // unique queryId for latest request
       filter,
       (contactsData) => {
-        // Map raw JSON data to Contact model instances
         const contactModels = contactsData.map(data => new Contact(data));
         setContacts(contactModels);
         setIsLoading(false);
@@ -34,12 +22,20 @@ export function ContactViewModel() {
         setIsLoading(false);
       }
     );
-  }
+  }, [filter]);
 
-  function setSearchFilter(newFilter) {
-    setFilter(newFilter);
+  useEffect(() => {
+    StoreMgr.addStoreChangeListener(refreshContacts);
     refreshContacts();
-  }
+    return () => {
+      StoreMgr.removeStoreChangeListener(refreshContacts);
+    };
+  }, [refreshContacts]);
+
+  const setSearchFilter = (newFilter) => {
+    setFilter(newFilter);
+    // refreshContacts automatically runs because it depends on filter
+  };
 
   return {
     contacts,

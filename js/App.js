@@ -27,9 +27,9 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import styles from './Styles';
-import SearchScreen from './SearchScreen';
-import ContactScreen from './ContactScreen';
+import styles from './src/views/Styles';
+import SearchScreen from './src/views/SearchScreen';
+import ContactScreen from './src/views/ContactScreen';
 
 const Stack = createStackNavigator();
 

@@ -10,8 +10,8 @@ import { oauth } from 'react-native-force';
 import styles from './Styles';
 import NavImgButton from './NavImgButton';
 import ContactCell from './ContactCell';
-import StoreMgr from './StoreMgr';
-import { ContactViewModel } from './src/viewmodels/ContactViewModel';// ✅ Make sure this path is correct
+import StoreMgr from '../services/store/StoreMgr';
+import { ContactViewModel } from '../viewmodels/ContactViewModel';// ✅ Make sure this path is correct
 
 const SearchScreen = ({ navigation, style }) => {
   const {
