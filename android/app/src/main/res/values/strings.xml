@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="account_type">com.coreflex.sfapp.login</string>
+	<string name="app_name"><b>rntemplatesf</b></string>
+	<string name="app_package">com.coreflex.sfapp</string>
+</resources>
