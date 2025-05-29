@@ -4,37 +4,34 @@ import Contact from '../models/ModelContact';
 
 export function ContactViewModel() {
   const [contacts, setContacts] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [filter, setFilter] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const refreshContacts = useCallback(() => {
+  const refresh = useCallback(() => {
     setIsLoading(true);
     StoreMgr.searchContacts(
-      Date.now(), // unique queryId for latest request
+      Date.now(),
       filter,
-      (contactsData) => {
-        const contactModels = contactsData.map(data => new Contact(data));
-        setContacts(contactModels);
+      (data) => {
+        setContacts(data.map(item => new Contact(item)));
         setIsLoading(false);
       },
       (error) => {
-        console.error("Failed to search contacts:", error);
+        console.error('Contact fetch failed', error);
         setIsLoading(false);
       }
     );
   }, [filter]);
 
   useEffect(() => {
-    StoreMgr.addStoreChangeListener(refreshContacts);
-    refreshContacts();
-    return () => {
-      StoreMgr.removeStoreChangeListener(refreshContacts);
-    };
-  }, [refreshContacts]);
+    // initial load and reactive updates
+    refresh();
+    const unsubscribe = StoreMgr.subscribeToChanges(refresh);
+    return () => unsubscribe();
+  }, [refresh]);
 
-  const setSearchFilter = (newFilter) => {
-    setFilter(newFilter);
-    // refreshContacts automatically runs because it depends on filter
+  const setSearchFilter = (value) => {
+    setFilter(value); // re-runs refresh via useEffect
   };
 
   return {
@@ -42,6 +39,5 @@ export function ContactViewModel() {
     isLoading,
     filter,
     setSearchFilter,
-    refreshContacts,
   };
 }

@@ -39,16 +39,19 @@ const SearchScreen = ({ navigation, style }) => {
   }, []);
 
   // Sync and listen for data updates
-  useEffect(() => {
-    StoreMgr.syncData();           // 🔄 first time sync
-    StoreMgr.addStoreChangeListener(refreshContacts);
+  // useEffect(() => {
+  //   StoreMgr.syncData();           // 🔄 first time sync
+  //   StoreMgr.addStoreChangeListener(refreshContacts);
 
-    return () => {
-      StoreMgr.removeStoreChangeListener(refreshContacts);
-      if (timeoutID.current) {
-        clearTimeout(timeoutID.current);
-      }
-    };
+  //   return () => {
+  //     StoreMgr.removeStoreChangeListener(refreshContacts);
+  //     if (timeoutID.current) {
+  //       clearTimeout(timeoutID.current);
+  //     }
+  //   };
+  // }, []);
+  useEffect(() => {
+    StoreMgr.syncData?.(); // optional: sync from server on first load
   }, []);
 
   const onSearchChange = (text) => {
@@ -60,11 +63,35 @@ const SearchScreen = ({ navigation, style }) => {
     }, 200); // Debounced input
   };
 
+  // const onAdd = () => {
+  //   StoreMgr.addContact(contact => {
+  //     navigation.push('Contact', { contact });
+  //   });
+  // };
   const onAdd = () => {
-    StoreMgr.addContact(contact => {
-      navigation.push('Contact', { contact });
-    });
+  // Create dummy contact data
+  const dummyContact = {
+    Id: `local_${Date.now()}`,
+    FirstName: 'Aac',
+    LastName: 'aaoe',
+    Title: 'Tester',
+    Email: 'john.doe@example.com',
+    MobilePhone: '123-456-7890',
+    Department: 'QA',
+    attributes: { type: "Contact" },
+    __locally_created__: true,
+    __locally_updated__: false,
+    __locally_deleted__: false,
+    __local__: true,
   };
+
+  // Upsert dummy contact into the store
+  StoreMgr.saveContact(dummyContact, () => {
+    // After saving, emit the store changed event to notify listeners
+    //StoreMgr.emitSmartStoreChanged();
+  });
+};
+
 
   const onSync = () => {
     StoreMgr.reSyncData();

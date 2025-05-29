@@ -175,7 +175,7 @@ function searchContacts(queryId, query, successCallback, errorCallback) {
     let querySpec;
     
     if (query === "") {
-        querySpec = smartstore.buildAllQuerySpec("LastName", "ascending", 100);
+        querySpec = smartstore.buildAllQuerySpec("FirstName", "ascending", 100);
     }
     else {
         const queryParts = query.split(/ /);
@@ -206,6 +206,10 @@ function searchContacts(queryId, query, successCallback, errorCallback) {
                          queryErrorCB);
 
 }
+function subscribeToChanges(listener) {
+  eventEmitter.addListener(SMARTSTORE_CHANGED, listener);
+  return () => eventEmitter.removeListener(SMARTSTORE_CHANGED, listener);
+}
 
 
 export default {
@@ -216,5 +220,6 @@ export default {
     searchContacts,
     addContact,
     deleteContact,
-    removeStoreChangeListener
+    removeStoreChangeListener,
+    subscribeToChanges
 };
