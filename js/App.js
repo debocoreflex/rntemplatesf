@@ -30,10 +30,22 @@ import { createStackNavigator } from '@react-navigation/stack';
 import styles from './src/views/Styles';
 import SearchScreen from './src/views/SearchScreen';
 import ContactScreen from './src/views/ContactScreen';
+import StoreMgr from './src/services/store/StoreMgr';
+import ContactReactiveStore from './src/services/store/ContactReactiveStore';
 
 const Stack = createStackNavigator();
 
 export default function() {
+
+React.useEffect(() => {
+    async function initializeContacts() {
+      await StoreMgr.syncData();            // 🟢 Register soup + sync down
+      ContactReactiveStore.initLoad();      // 🟢 Safe to query now
+    }
+
+    initializeContacts();
+  }, []);
+
     return (
         <NavigationContainer>
             <Stack.Navigator

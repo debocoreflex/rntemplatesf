@@ -1,43 +1,37 @@
-import { useState, useEffect, useCallback } from 'react';
-import StoreMgr from '../services/store/StoreMgr';
-import Contact from '../models/ModelContact';
+import { useEffect, useState } from 'react';
+import ContactReactiveStore from '../services/store/ContactReactiveStore';
 
 export function ContactViewModel() {
   const [contacts, setContacts] = useState([]);
-  const [filter, setFilter] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-
-  const refresh = useCallback(() => {
-    setIsLoading(true);
-    StoreMgr.searchContacts(
-      Date.now(),
-      filter,
-      (data) => {
-        setContacts(data.map(item => new Contact(item)));
-        setIsLoading(false);
-      },
-      (error) => {
-        console.error('Contact fetch failed', error);
-        setIsLoading(false);
-      }
-    );
-  }, [filter]);
+  const [filter, setFilterState] = useState('');
 
   useEffect(() => {
-    // initial load and reactive updates
-    refresh();
-    const unsubscribe = StoreMgr.subscribeToChanges(refresh);
-    return () => unsubscribe();
-  }, [refresh]);
+    const subscription = ContactReactiveStore.getObservable().subscribe(setContacts);
 
-  const setSearchFilter = (value) => {
-    setFilter(value); // re-runs refresh via useEffect
+    // Load contacts once when ViewModel mounts
+    ContactReactiveStore.initLoad();
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const setSearchFilter = (newFilter) => {
+    setFilterState(newFilter);
+    ContactReactiveStore.setSearchFilter(newFilter);
+  };
+
+  const addContact = (contact) => {
+    ContactReactiveStore.addContact(contact);
+  };
+
+  const deleteContact = (contact) => {
+    ContactReactiveStore.deleteContact(contact);
   };
 
   return {
     contacts,
-    isLoading,
     filter,
     setSearchFilter,
+    addContact,
+    deleteContact,
   };
 }

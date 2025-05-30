@@ -1,30 +1,23 @@
 import React, { useEffect, useRef } from 'react';
-import {
-  Alert,
-  View,
-  FlatList,
-  Keyboard
-} from 'react-native';
+import { Alert, View, FlatList, Keyboard } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 import { oauth } from 'react-native-force';
 import styles from './Styles';
 import NavImgButton from './NavImgButton';
 import ContactCell from './ContactCell';
-import StoreMgr from '../services/store/StoreMgr';
-import { ContactViewModel } from '../viewmodels/ContactViewModel';// ✅ Make sure this path is correct
+import { ContactViewModel } from '../viewmodels/ContactViewModel';
 
 const SearchScreen = ({ navigation, style }) => {
   const {
     contacts,
-    isLoading,
     filter,
     setSearchFilter,
-    refreshContacts
+    addContact,
+    deleteContact
   } = ContactViewModel();
 
   const timeoutID = useRef(null);
 
-  // Setup header buttons
   useEffect(() => {
     navigation.setOptions({
       title: 'Contacts',
@@ -34,67 +27,39 @@ const SearchScreen = ({ navigation, style }) => {
           <NavImgButton icon='cloud-sync' iconType='material-community' onPress={onSync} />
           <NavImgButton icon='logout' iconType='material-community' onPress={onLogout} />
         </View>
-      )
+      ),
     });
   }, []);
 
-  // Sync and listen for data updates
-  // useEffect(() => {
-  //   StoreMgr.syncData();           // 🔄 first time sync
-  //   StoreMgr.addStoreChangeListener(refreshContacts);
-
-  //   return () => {
-  //     StoreMgr.removeStoreChangeListener(refreshContacts);
-  //     if (timeoutID.current) {
-  //       clearTimeout(timeoutID.current);
-  //     }
-  //   };
-  // }, []);
-  useEffect(() => {
-    StoreMgr.syncData?.(); // optional: sync from server on first load
-  }, []);
-
   const onSearchChange = (text) => {
-    const query = text.toLowerCase();
     if (timeoutID.current) clearTimeout(timeoutID.current);
-
     timeoutID.current = setTimeout(() => {
-      setSearchFilter(query);  // ✅ Triggers refresh inside ViewModel
-    }, 200); // Debounced input
+      setSearchFilter(text.toLowerCase());
+    }, 200);
   };
 
-  // const onAdd = () => {
-  //   StoreMgr.addContact(contact => {
-  //     navigation.push('Contact', { contact });
-  //   });
-  // };
   const onAdd = () => {
-  // Create dummy contact data
-  const dummyContact = {
-    Id: `local_${Date.now()}`,
-    FirstName: 'Aac',
-    LastName: 'aaoe',
-    Title: 'Tester',
-    Email: 'john.doe@example.com',
-    MobilePhone: '123-456-7890',
-    Department: 'QA',
-    attributes: { type: "Contact" },
-    __locally_created__: true,
-    __locally_updated__: false,
-    __locally_deleted__: false,
-    __local__: true,
+    const dummyContact = {
+      Id: `local_${Date.now()}`,
+      FirstName: 'Abbbb',
+      LastName: 'acb',
+      Title: 'Dev',
+      Email: 'john.oe@example.com',
+      MobilePhone: '123-456-7866',
+      Department: 'DEV',
+      attributes: { type: "Contact" },
+      __locally_created__: true,
+      __locally_updated__: false,
+      __locally_deleted__: false,
+      __local__: true,
+    };
+
+    addContact(dummyContact);
   };
-
-  // Upsert dummy contact into the store
-  StoreMgr.saveContact(dummyContact, () => {
-    // After saving, emit the store changed event to notify listeners
-    //StoreMgr.emitSmartStoreChanged();
-  });
-};
-
 
   const onSync = () => {
-    StoreMgr.reSyncData();
+    // If you want to trigger reSync manually, call your StoreMgr here
+    // e.g. StoreMgr.reSyncData();
   };
 
   const onLogout = () => {
@@ -109,7 +74,11 @@ const SearchScreen = ({ navigation, style }) => {
     );
   };
 
-  const extractKey = (item) => `list-${item._soupEntryId}`;
+  const extractKey = (item) => {
+    const key = item._soupEntryId ?? item.Id;
+    if (!key) console.warn('Missing key for item:', item);
+    return `list-${key ?? Math.random().toString(36)}`;
+  };
 
   const renderRow = ({ item }) => (
     <ContactCell onSelect={() => selectContact(item)} contact={item} />
@@ -126,7 +95,6 @@ const SearchScreen = ({ navigation, style }) => {
         lightTheme
         autoCorrect={false}
         onChangeText={onSearchChange}
-        showLoading={isLoading}
         value={filter}
         placeholder="Search a contact..."
       />
