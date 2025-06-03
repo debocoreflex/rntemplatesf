@@ -37,14 +37,22 @@ const Stack = createStackNavigator();
 
 export default function() {
 
-React.useEffect(() => {
-    async function initializeContacts() {
-      await StoreMgr.syncData();            // 🟢 Register soup + sync down
-      ContactReactiveStore.initLoad();      // 🟢 Safe to query now
-    }
+// React.useEffect(() => {
+//     async function initializeContacts() {
+//       await StoreMgr.syncData();            // 🟢 Register soup + sync down
+//       ContactReactiveStore.initLoad();      // 🟢 Safe to query now
+//     }
 
-    initializeContacts();
-  }, []);
+//     initializeContacts();
+//   }, []);
+  React.useEffect(() => {
+  async function initializeContacts() {
+    await StoreMgr.syncData(); // This internally loads contacts into ContactReactiveStore
+  }
+
+  initializeContacts();
+}, []);
+
 
     return (
         <NavigationContainer>

@@ -1,31 +1,7 @@
-/*
- * Copyright (c) 2015-present, salesforce.com, inc.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification, are permitted provided
- * that the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice, this list of conditions and the
- * following disclaimer.
- *
- * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and
- * the following disclaimer in the documentation and/or other materials provided with the distribution.
- *
- * Neither the name of salesforce.com, inc. nor the names of its contributors may be used to endorse or
- * promote products derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
- * PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
- * TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
- * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- */
 
 import EventEmitter from '../../views/events';
 import {smartstore, mobilesync, forceUtil} from 'react-native-force';
+import ContactReactiveStore from './ContactReactiveStore';
 
 const registerSoup = forceUtil.promiser(smartstore.registerSoup);
 const getSyncStatus = forceUtil.promiser(mobilesync.getSyncStatus);
@@ -63,7 +39,8 @@ function syncDownContacts() {
         .then(() => {
             console.log("syncDown completed or failed");
             syncInFlight = false;
-            emitSmartStoreChanged();
+            //emitSmartStoreChanged();
+             ContactReactiveStore.initLoad(); 
         });
 }
 
@@ -79,7 +56,8 @@ function reSyncContacts() {
         .then(() => {
             console.log("reSync completed or failed");
             syncInFlight = false;
-            emitSmartStoreChanged();
+            //emitSmartStoreChanged();
+             ContactReactiveStore.initLoad(); 
         });
 }
 
@@ -96,11 +74,13 @@ function syncUpContacts() {
         .then(() => {
             console.log("syncUp completed or failed");
             syncInFlight = false;
-            emitSmartStoreChanged();
+            //emitSmartStoreChanged();
+             ContactReactiveStore.initLoad(); 
         });
 }
 
 function firstTimeSyncData() {
+    console.log("StoreMgr: firstTimeSyncData called");
     return registerSoup(false,
                         "contacts", 
                         [ {path:"Id", type:"string"}, 
@@ -111,6 +91,7 @@ function firstTimeSyncData() {
 }
 
 function syncData() {
+    console.log("StoreMgr: syncData called");
     return getSyncStatus(false, syncName)
         .then((sync) => {
             if (sync == null) {
@@ -120,8 +101,30 @@ function syncData() {
             }
         });
 }
+// function syncData() {
+//     return registerSoup(false,
+//         "contacts", 
+//         [
+//           { path: "Id", type: "string" },
+//           { path: "FirstName", type: "full_text" },
+//           { path: "LastName", type: "full_text" },
+//           { path: "__local__", type: "string" }
+//         ]
+//     ).then(() => {
+//         return getSyncStatus(false, syncName)
+//             .then((sync) => {
+//                 if (sync == null) {
+//                     return syncDownContacts();
+//                 } else {
+//                     return reSyncData();
+//                 }
+//             });
+//     });
+// }
+
 
 function reSyncData() {
+    console.log("StoreMgr: reSyncData called");
     return syncUpContacts()
         .then(reSyncContacts);
 }
@@ -130,11 +133,12 @@ function addStoreChangeListener(listener) {
     eventEmitter.addListener(SMARTSTORE_CHANGED, listener);
 }
 
-function saveContact(contact, callback) {
+export function saveContact(contact, callback) {
     smartstore.upsertSoupEntries(false, "contacts", [contact],
                                  () => {
                                      callback();
-                                     emitSmartStoreChanged();
+                                   //  emitSmartStoreChanged();
+                                      ContactReactiveStore.initLoad(); 
                                  });
 }
 
@@ -151,7 +155,7 @@ function addContact(successCallback, errorCallback) {
                                  errorCallback);
 }
 
-function deleteContact(contact, successCallback, errorCallback) {
+export function deleteContact(contact, successCallback, errorCallback) {
     smartstore.removeFromSoup(false, "contacts", [ contact._soupEntryId ],
                               successCallback,
                               errorCallback);
@@ -210,16 +214,70 @@ function subscribeToChanges(listener) {
   eventEmitter.addListener(SMARTSTORE_CHANGED, listener);
   return () => eventEmitter.removeListener(SMARTSTORE_CHANGED, listener);
 }
+// export async function getContactsFromSmartStore() {
+//   const querySpec = smartstore.buildAllQuerySpec('lastName', 'ascending', 1000); // customize as needed
+
+//   return new Promise((resolve, reject) => {
+
+
+//     smartstore.querySoup( false,'contacts', querySpec,
+//       result => resolve(result.entries || []),
+//       error => reject(error)
+//     );
+//   });
+// }
+
+let isSoupRegistered = false;
+
+export async function getContactsFromSmartStore() {
+  if (!isSoupRegistered) {
+    const exists = await new Promise((resolve) =>
+      smartstore.soupExists(false, "contacts", resolve)
+    );
+
+    if (!exists) {
+      await new Promise((resolve, reject) =>
+        smartstore.registerSoup(
+          false,
+          "contacts",
+          [
+            { path: "Id", type: "string" },
+            { path: "FirstName", type: "full_text" },
+            { path: "LastName", type: "full_text" },
+            { path: "__local__", type: "string" },
+          ],
+          resolve,
+          reject
+        )
+      );
+      console.log("[StoreMgr] contacts soup registered");
+    } else {
+      console.log("[StoreMgr] contacts soup already exists");
+    }
+
+    isSoupRegistered = true;
+  }
+
+  const querySpec = smartstore.buildAllQuerySpec("FirstName", "ascending", 1000);
+
+  return new Promise((resolve, reject) => {
+    smartstore.querySoup(
+      false,
+      "contacts",
+      querySpec,
+      (cursor) => resolve(cursor.currentPageOrderedEntries),
+      reject
+    );
+  });
+}
 
 
 export default {
     syncData,
     reSyncData,
-    addStoreChangeListener,
     saveContact,
     searchContacts,
     addContact,
     deleteContact,
-    removeStoreChangeListener,
-    subscribeToChanges
+    getContactsFromSmartStore
 };

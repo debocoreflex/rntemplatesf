@@ -41,8 +41,8 @@ const SearchScreen = ({ navigation, style }) => {
   const onAdd = () => {
     const dummyContact = {
       Id: `local_${Date.now()}`,
-      FirstName: 'Abbbb',
-      LastName: 'acb',
+      FirstName: 'Acc',
+      LastName: 'mukh',
       Title: 'Dev',
       Email: 'john.oe@example.com',
       MobilePhone: '123-456-7866',

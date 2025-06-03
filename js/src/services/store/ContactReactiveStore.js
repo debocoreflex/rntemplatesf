@@ -1,62 +1,63 @@
 import { BehaviorSubject } from 'rxjs';
-import StoreMgr from './StoreMgr';
-import Contact from '../../models/ModelContact';
+import {
+  getContactsFromSmartStore,
+  saveContact,
+  deleteContact as storeDeleteContact
+} from './StoreMgr';
 
-const contactMap = new Map();
 const contactSubject = new BehaviorSubject([]);
 let currentFilter = '';
-
-// Subscribe to store changes and reload cache automatically
-StoreMgr.subscribeToChanges(() => {
-  console.log('[ContactReactiveStore] StoreMgr change event received');
-  initLoad();
-});
+let allContactsCache = [];
 
 function applyFilterToCache() {
-  const filtered = Array.from(contactMap.values()).filter(contact =>
-    contact.FirstName?.toLowerCase().includes(currentFilter) ||
-    contact.LastName?.toLowerCase().includes(currentFilter)
-  );
+  const filtered = currentFilter
+    ? allContactsCache.filter(contact =>
+        `${contact.FirstName ?? ''} ${contact.LastName ?? ''}`
+          .toLowerCase()
+          .includes(currentFilter)
+      )
+    : allContactsCache;
+
   contactSubject.next(filtered);
 }
 
-function initLoad() {
-  StoreMgr.searchContacts(Date.now(), '', (records) => {
-    contactMap.clear();
-    records.forEach(record => contactMap.set(record.Id, new Contact(record)));
+async function loadContacts() {
+  try {
+    const contacts = await getContactsFromSmartStore();
+    allContactsCache = contacts;
     applyFilterToCache();
-  }, (err) => {
-    console.error('[ContactReactiveStore] SmartStore Init Failed', err);
-  });
+  } catch (error) {
+    console.error('[ContactReactiveStore] Failed to load contacts', error);
+  }
 }
 
-function addContact(contact) {
-  StoreMgr.saveContact(contact, () => {
-    // No manual cache update here — store event triggers reload
-    console.log('[ContactReactiveStore] Contact saved, waiting for store event...');
-  });
-}
+const ContactReactiveStore = {
+  getObservable() {
+    return contactSubject.asObservable();
+  },
 
-function deleteContact(contact) {
-  StoreMgr.deleteContact(contact, () => {
-    // No manual cache update here — store event triggers reload
-    console.log('[ContactReactiveStore] Contact deleted, waiting for store event...');
-  });
-}
+  initLoad() {
+    loadContacts();
+  },
 
-function setSearchFilter(filter) {
-  currentFilter = filter.toLowerCase();
-  applyFilterToCache();
-}
+  addContact(contact) {
+    saveContact(contact, () => {
+      console.log('[ContactReactiveStore] Contact saved, reloading...');
+      loadContacts();
+    });
+  },
 
-function getObservable() {
-  return contactSubject.asObservable();
-}
+  deleteContact(contact) {
+    storeDeleteContact(contact, () => {
+      console.log('[ContactReactiveStore] Contact deleted, reloading...');
+      loadContacts();
+    });
+  },
 
-export default {
-  initLoad,
-  addContact,
-  deleteContact,
-  setSearchFilter,
-  getObservable,
+  setSearchFilter(filter) {
+    currentFilter = filter.toLowerCase();
+    applyFilterToCache();
+  }
 };
+
+export default ContactReactiveStore;
