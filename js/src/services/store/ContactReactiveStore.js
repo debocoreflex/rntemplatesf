@@ -43,14 +43,18 @@ const ContactReactiveStore = {
   addContact(contact) {
     saveContact(contact, () => {
       console.log('[ContactReactiveStore] Contact saved, reloading...');
-      loadContacts();
+      //loadContacts();
+      allContactsCache.unshift(contact);
+      applyFilterToCache();
     });
   },
 
   deleteContact(contact) {
     storeDeleteContact(contact, () => {
       console.log('[ContactReactiveStore] Contact deleted, reloading...');
-      loadContacts();
+      //loadContacts();
+       allContactsCache = allContactsCache.filter(c => c.Id !== contact.Id);
+    applyFilterToCache();
     });
   },
 
