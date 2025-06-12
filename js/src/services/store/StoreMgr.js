@@ -272,6 +272,43 @@ export async function getContactsFromSmartStore() {
 }
 
 
+
+//COMMON REACTIVE APPROACH FROM STORE STARTS HERE
+
+export async function getEntriesFromSmartStore(soupName) {
+  const exists = await new Promise((resolve) =>
+    smartstore.soupExists(false, soupName, resolve)
+  );
+
+  if (!exists) {
+    // Register dynamically? Or throw error? You decide.
+    throw new Error(`Soup ${soupName} does not exist`);
+  }
+
+  const querySpec = smartstore.buildAllQuerySpec("FirstName", "ascending", 100); // Make key configurable?
+
+  return new Promise((resolve, reject) => {
+    smartstore.querySoup(
+      false,
+      soupName,
+      querySpec,
+      (cursor) => resolve(cursor.currentPageOrderedEntries),
+      reject
+    );
+  });
+}
+
+export function saveEntry(soupName, entry, callback) {
+  smartstore.upsertSoupEntries(false, soupName, [entry], callback);
+}
+
+export function deleteEntry(soupName, entry, callback) {
+  smartstore.removeFromSoup(false, soupName, [entry._soupEntryId], callback);
+}
+// COMMON REACTIVE APPROACH FROM STORE ENDS HERE
+
+
+
 export default {
     syncData,
     reSyncData,
