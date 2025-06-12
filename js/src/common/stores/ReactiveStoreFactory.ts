@@ -1,5 +1,5 @@
 import { BehaviorSubject } from 'rxjs';
-import { getContactsFromSmartStore, saveContact, deleteContact } from '../../services/store/StoreMgr'; // adjust this path if needed
+import { saveContact,deleteContact, getContactsFromSmartStore } from '../../services/store/SmartStoreUtils';
 
 export function ReactiveStoreFactory({ soupName, filterKeys }: { soupName: string; filterKeys: string[] }) {
   const subject = new BehaviorSubject<any[]>([]);
