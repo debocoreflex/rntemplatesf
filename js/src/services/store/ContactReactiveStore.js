@@ -1,4 +1,4 @@
-import { ReactiveStoreFactory } from "./ReactiveStoreFactory";
+import { ReactiveStoreFactory } from "../../common/stores/ReactiveStoreFactory";
 const ContactReactiveStore = ReactiveStoreFactory({
   soupName: 'contacts',
   filterKeys: ['FirstName', 'LastName']
