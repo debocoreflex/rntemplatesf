@@ -69,15 +69,23 @@ def jscFlavor = 'org.webkit:android-jsc:+'
 android {
     namespace = "com.coreflex.sfapp"
 
-    compileSdk rootProject.ext.compileSdk
+    compileSdk 35
 
     namespace "com.coreflex.sfapp"
+
+    testBuildType "debug" 
+
     defaultConfig {
         applicationId "com.coreflex.sfapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+
+    testBuildType System.getProperty('testBuildType', 'debug')
+    testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+
+  
     }
 
     buildFeatures {
@@ -88,6 +96,7 @@ android {
         release {
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            proguardFile "${rootProject.projectDir}/../node_modules/detox/android/detox/proguard-rules-app.pro"
         }
     }
 }
@@ -104,6 +113,11 @@ dependencies {
     }
 
     debugImplementation("com.facebook.flipper:flipper-fresco-plugin:${FLIPPER_VERSION}")
+
+// ✅ Detox
+    //androidTestImplementation 'com.wix:detox:+'
+    androidTestImplementation("com.wix:detox:+")
+    implementation 'androidx.appcompat:appcompat:1.1.0'
 
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")

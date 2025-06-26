@@ -1,11 +1,17 @@
 buildscript {
     ext {
-        minSdkVersion = 28
-        targetSdkVersion = 35        
-        compileSdk = 35
+        // minSdkVersion = 28
+        // targetSdkVersion = 35        
+        // compileSdk = 35
 
         // We use NDK 23 which has both M1 support and is the side-by-side NDK version from AGP.
         ndkVersion = "23.1.7779620"
+
+        buildToolsVersion = "34.0.0"
+        minSdkVersion = 35
+        compileSdkVersion = 35
+        targetSdkVersion = 35
+        kotlinVersion = '1.9.24'
     }
 
     // Work-around for "In order to compile Java 9+ source, please set compileSdkVersion to 30 or above" error in some React Native community libraries.
@@ -28,5 +34,16 @@ buildscript {
         classpath 'com.android.tools.build:gradle:8.6.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.24"
         classpath "com.facebook.react:react-native-gradle-plugin"
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
+    }
+
+   allprojects {
+   repositories {
+     google()
+     maven { 
+       url("$rootDir/../node_modules/detox/Detox-android")
+     }
+     maven { url 'https://www.jitpack.io' }
+   }
     }
 }
