@@ -50,7 +50,7 @@ module.exports = {
     emulator: {
       type: 'android.emulator',
       device: {
-        avdName: 'Pixel_3a_API_30_x86'
+        avdName: 'Pixel_API_36'
       }
     }
   },
@@ -72,7 +72,7 @@ module.exports = {
       app: 'android.release'
     },
     'android.emu.debug': {
-      device: 'attached',
+      device: 'emulator',
       app: 'android.debug'
     },
     'android.emu.release': {

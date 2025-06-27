@@ -90,7 +90,7 @@ const SearchScreen = ({ navigation, style }) => {
   };
 
   return (
-    <View style={style}>
+    <View  testID="SearchScreen" style={style}>
       <SearchBar
         lightTheme
         autoCorrect={false}

@@ -31,12 +31,16 @@ import styles from './src/views/Styles';
 import SearchScreen from './src/views/SearchScreen';
 import ContactScreen from './src/views/ContactScreen';
 import StoreMgr from './src/services/store/StoreMgr';
+import { oauth } from 'react-native-force';
 import ContactReactiveStore from './src/services/store/ContactReactiveStore';
+import DetoxTestScreen from './src/views/DetoxTestScreen';
 
 const Stack = createStackNavigator();
 
+
 export default function() {
 
+  const isDetox =  true;
 // React.useEffect(() => {
 //     async function initializeContacts() {
 //       await StoreMgr.syncData();            // 🟢 Register soup + sync down
@@ -45,17 +49,56 @@ export default function() {
 
 //     initializeContacts();
 //   }, []);
-  React.useEffect(() => {
-  async function initializeContacts() {
-    await StoreMgr.syncData(); // This internally loads contacts into ContactReactiveStore
-  }
 
-  initializeContacts();
-}, []);
+
+//   React.useEffect(() => {
+//   async function initializeContacts() {
+//     await StoreMgr.syncData(); // This internally loads contacts into ContactReactiveStore
+//   }
+
+//   initializeContacts();
+// }, []);
+
+// React.useEffect(() => {
+//   async function initializeContacts() {
+//     if (isDetox) {
+//       // Fake login: manually set auth info
+//        oauth.getAuthCredentials = (success, fail) => {
+//         success({
+//           accessToken: "00D4x000007shmb!AQIAQAxzB.oNi3gZlgIjt3BC2GlOyKpA4TKzFEHxC3S0ZUr0.MdRpz68I5JBkaA67eCqdkFrJqkrOVeq_ENL7LYOJZ6.fVxo",
+//           communityId: null,
+//           communityUrl: null,
+//           identityUrl: 'https://login.salesforce.com/id/00D4x000007shmbEAA/005KY000000GgWZYA0',
+//           instanceUrl: 'https://cfsb2bcommerce-dev-ed.my.salesforce.com',
+//           loginUrl: 'https://cfsb2bcommerce-dev-ed.my.salesforce.com/',
+//           orgId: '00D4x000007shmbEAA',
+//           refreshToken: "5Aep861Bky2w54txC3QBh9VpUxfxxY8AfjLrpoeJvk1YuiW4zdkVS3Y_wbGdtqWlEgpY5s8XH8ACvAntiewUrgU",
+//           userAgent: 'SalesforceMobileSDK/13.0.0 android mobile/16 (sdk_gphone64_x86_64) rntemplatesf/1.0(1) ReactNative uid_ae9f3276b0fd8e74 ftr_AI.SY.UA.US SecurityPatch/2025-04-05',
+//           userId: '005KY000000GgWZYA0',
+//         });
+
+   
+//       };
+    
+      
+//     }
+
+//     await StoreMgr.syncData(); // This will trigger contact load
+//   }
+
+//   initializeContacts();
+// }, []);
+
+
+
 
 
     return (
         <NavigationContainer>
+
+          {/* {isDetox ? (
+          <Stack.Screen name="DetoxTest" component={DetoxTestScreen} />
+        ) : ( */}
             <Stack.Navigator
                 initialRouteName="Contacts"
                 screenOptions={{
@@ -67,6 +110,7 @@ export default function() {
             <Stack.Screen name="Contacts" component={SearchScreen} />
             <Stack.Screen name="Contact" component={ContactScreen} />
           </Stack.Navigator>
+        {/* )} */}
         </NavigationContainer>
     );
 }

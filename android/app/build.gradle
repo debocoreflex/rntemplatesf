@@ -84,6 +84,7 @@ android {
 
     testBuildType System.getProperty('testBuildType', 'debug')
     testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+    //testInstrumentationRunner "com.coreflex.sfapp.DetoxTest"
 
   
     }
