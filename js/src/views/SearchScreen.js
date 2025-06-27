@@ -7,6 +7,28 @@ import NavImgButton from './NavImgButton';
 import ContactCell from './ContactCell';
 import { ContactViewModel } from '../viewmodels/ContactViewModel';
 
+const isDetox = true;
+const dummyDataTe= [
+  {
+    Id: '1',
+    FirstName: 'John',
+    LastName: 'Doe',
+    Title: 'Engineer',
+    Email: 'john@example.com',
+    MobilePhone: '1234567890',
+    Department: 'Engineering',
+  },
+  {
+    Id: '2',
+    FirstName: 'Jane',
+    LastName: 'Smith',
+    Title: 'Designer',
+    Email: 'jane@example.com',
+    MobilePhone: '0987654321',
+    Department: 'Design',
+  },
+];
+
 const SearchScreen = ({ navigation, style }) => {
   const {
     contacts,
@@ -19,6 +41,7 @@ const SearchScreen = ({ navigation, style }) => {
   const timeoutID = useRef(null);
 
   useEffect(() => {
+    console.log('isDetox:', isDetox);
     navigation.setOptions({
       title: 'Contacts',
       headerRight: () => (
@@ -90,7 +113,7 @@ const SearchScreen = ({ navigation, style }) => {
   };
 
   return (
-    <View  testID="SearchScreen" style={style}>
+  <View testID="SearchScreen" style={[{ flex: 1 }, style]}>
       <SearchBar
         lightTheme
         autoCorrect={false}
@@ -99,7 +122,9 @@ const SearchScreen = ({ navigation, style }) => {
         placeholder="Search a contact..."
       />
       <FlatList
-        data={contacts}
+      style={{ flex: 1 }}
+        testID="ContactList"
+        data={isDetox ? dummyDataTe : contacts}
         keyExtractor={extractKey}
         renderItem={renderRow}
       />
