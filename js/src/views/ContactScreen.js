@@ -10,6 +10,8 @@ import NavImgButton from './NavImgButton';
 import Field from './Field';
 import storeMgr from '../services/store/StoreMgr';
 import { Button } from 'react-native-elements';
+import { detoxEnabled } from '../utils/detoxUtills';
+import { deleteDetoxContacts, saveDetoxContact } from '../services/detoxstore/DetoxStoreUtils';
 
 const ContactScreen = ({ navigation, route, style }) => {
     const [contact, setContact] = useState(route.params.contact || {});
@@ -44,7 +46,11 @@ const ContactScreen = ({ navigation, route, style }) => {
     const onBack = () => {
         if (contact.__locally_created__ && !contact.__locally_modified__) {
             // Nothing typed in - delete
-            storeMgr.deleteContact(contact, () => navigation.pop());
+            if (detoxEnabled()) {
+                deleteDetoxContacts(contact, () => navigation.pop());
+            } else {
+                storeMgr.deleteContact(contact, () => navigation.pop());
+            }
         } else {
             navigation.pop();
         }
@@ -58,8 +64,13 @@ const ContactScreen = ({ navigation, route, style }) => {
             __local__: true
         };
         setContact(updatedContact);
-        storeMgr.saveContact(updatedContact, () => navigation.pop());
-    };
+        if (detoxEnabled()) {
+            saveDetoxContact(updatedContact, () => navigation.pop());
+        } else {
+            // Save the contact using store manager
+            storeMgr.saveContact(updatedContact, () => navigation.pop());
+        }
+    }
 
     const onChange = (fieldKey, fieldValue) => {
         setContact(prevContact => ({
@@ -75,7 +86,12 @@ const ContactScreen = ({ navigation, route, style }) => {
         };
         updatedContact.__local__ = updatedContact.__locally_deleted__ || updatedContact.__locally_updated__ || updatedContact.__locally_created__;
         setContact(updatedContact);
-        storeMgr.saveContact(updatedContact, () => navigation.pop());
+        if (detoxEnabled()) {
+            saveDetoxContact(updatedContact, () => navigation.pop());
+        } else {
+            storeMgr.saveContact(updatedContact, () => navigation.pop());
+        }
+
     };
 
     const renderErrorIfAny = () => {

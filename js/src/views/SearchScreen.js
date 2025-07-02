@@ -6,28 +6,7 @@ import styles from './Styles';
 import NavImgButton from './NavImgButton';
 import ContactCell from './ContactCell';
 import { ContactViewModel } from '../viewmodels/ContactViewModel';
-
-const isDetox = true;
-const dummyDataTe= [
-  {
-    Id: '1',
-    FirstName: 'John',
-    LastName: 'Doe',
-    Title: 'Engineer',
-    Email: 'john@example.com',
-    MobilePhone: '1234567890',
-    Department: 'Engineering',
-  },
-  {
-    Id: '2',
-    FirstName: 'Jane',
-    LastName: 'Smith',
-    Title: 'Designer',
-    Email: 'jane@example.com',
-    MobilePhone: '0987654321',
-    Department: 'Design',
-  },
-];
+import { detoxEnabled } from '../utils/detoxUtills';
 
 const SearchScreen = ({ navigation, style }) => {
   const {
@@ -35,13 +14,14 @@ const SearchScreen = ({ navigation, style }) => {
     filter,
     setSearchFilter,
     addContact,
-    deleteContact
+    deleteContact,
+    addDetoxContact,
   } = ContactViewModel();
 
   const timeoutID = useRef(null);
 
   useEffect(() => {
-    console.log('isDetox:', isDetox);
+
     navigation.setOptions({
       title: 'Contacts',
       headerRight: () => (
@@ -64,7 +44,7 @@ const SearchScreen = ({ navigation, style }) => {
   const onAdd = () => {
     const dummyContact = {
       Id: `local_${Date.now()}`,
-      FirstName: 'Add',
+      FirstName: 'Atk',
       LastName: 'mukh',
       Title: 'Dev',
       Email: 'john.oe@example.com',
@@ -77,7 +57,12 @@ const SearchScreen = ({ navigation, style }) => {
       __local__: true,
     };
 
-    addContact(dummyContact);
+    if (detoxEnabled()) {
+      addDetoxContact(dummyContact);
+    } else {
+      addContact(dummyContact);
+    }
+
   };
 
   const onSync = () => {
@@ -113,7 +98,7 @@ const SearchScreen = ({ navigation, style }) => {
   };
 
   return (
-  <View testID="SearchScreen" style={[{ flex: 1 }, style]}>
+    <View testID="SearchScreen" style={[{ flex: 1 }, style]}>
       <SearchBar
         lightTheme
         autoCorrect={false}
@@ -122,9 +107,9 @@ const SearchScreen = ({ navigation, style }) => {
         placeholder="Search a contact..."
       />
       <FlatList
-      style={{ flex: 1 }}
+        style={{ flex: 1 }}
         testID="ContactList"
-        data={isDetox ? dummyDataTe : contacts}
+        data={contacts}
         keyExtractor={extractKey}
         renderItem={renderRow}
       />

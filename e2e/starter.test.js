@@ -19,7 +19,9 @@ describe('App Launch', () => {
   it('should display dummy contact list', async () => {
     await expect(element(by.id('SearchScreen'))).toBeVisible();
     await expect(element(by.id('ContactList'))).toBeVisible();
-    await expect(element(by.text('John Doe'))).toBeVisible();
-    await expect(element(by.text('Jane Smith'))).toBeVisible();
+    // await expect(element(by.text('Test User'))).toBeVisible();
+    // await expect(element(by.text('Add mukh'))).toBeVisible();
+    await expect(element(by.text('Test User')).atIndex(0)).toBeVisible();
+
   });
 });
