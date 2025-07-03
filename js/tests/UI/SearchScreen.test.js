@@ -40,6 +40,6 @@ describe('SearchScreen', () => {
 
     expect(screen.getByPlaceholderText('Search a contact...')).toBeTruthy();
     expect(screen.getByText('John Doe')).toBeTruthy();
-    expect(screen.getByText('Jane Smi')).toBeTruthy();
+    expect(screen.getByText('Jane Smith')).toBeTruthy();
   });
 });
