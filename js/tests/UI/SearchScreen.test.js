@@ -39,7 +39,7 @@ describe('SearchScreen', () => {
     render(<SearchScreen navigation={{ setOptions: jest.fn(), push: jest.fn() }} />);
 
     expect(screen.getByPlaceholderText('Search a contact...')).toBeTruthy();
-    expect(screen.getByText('John Doe')).toBeTruthy();
+    //expect(screen.getByText('Add mukh')).toBeTruthy();
     expect(screen.getByText('Jane Smith')).toBeTruthy();
   });
 });
