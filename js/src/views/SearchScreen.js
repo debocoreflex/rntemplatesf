@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef,useState,useContext } from 'react';
 import { Alert, View, FlatList, Keyboard } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 import { oauth } from 'react-native-force';
@@ -6,6 +6,7 @@ import styles from './Styles';
 import NavImgButton from './NavImgButton';
 import ContactCell from './ContactCell';
 import { ContactViewModel } from '../viewmodels/ContactViewModel';
+import { useSyncContext } from '../common/reducers/SyncContext';
 
 const SearchScreen = ({ navigation, style }) => {
   const {
@@ -15,6 +16,13 @@ const SearchScreen = ({ navigation, style }) => {
     addContact,
     deleteContact
   } = ContactViewModel();
+  const { syncState } = useSyncContext();
+    
+  
+
+
+
+  
 
   const timeoutID = useRef(null);
 
@@ -29,7 +37,15 @@ const SearchScreen = ({ navigation, style }) => {
         </View>
       ),
     });
+
+
+
+    
+
   }, []);
+  useEffect(() => {
+console.log('SearchScreen syncState', syncState);
+  }, [syncState]);
 
   const onSearchChange = (text) => {
     if (timeoutID.current) clearTimeout(timeoutID.current);

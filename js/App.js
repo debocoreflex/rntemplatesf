@@ -32,19 +32,11 @@ import SearchScreen from './src/views/SearchScreen';
 import ContactScreen from './src/views/ContactScreen';
 import StoreMgr from './src/services/store/StoreMgr';
 import ContactReactiveStore from './src/services/store/ContactReactiveStore';
+import { SyncProvider } from './src/common/reducers/SyncContext';
 
 const Stack = createStackNavigator();
 
 export default function() {
-
-// React.useEffect(() => {
-//     async function initializeContacts() {
-//       await StoreMgr.syncData();            // 🟢 Register soup + sync down
-//       ContactReactiveStore.initLoad();      // 🟢 Safe to query now
-//     }
-
-//     initializeContacts();
-//   }, []);
   React.useEffect(() => {
   async function initializeContacts() {
     await StoreMgr.syncData(); // This internally loads contacts into ContactReactiveStore
@@ -54,7 +46,10 @@ export default function() {
 }, []);
 
 
+
+
     return (
+      <SyncProvider>
         <NavigationContainer>
             <Stack.Navigator
                 initialRouteName="Contacts"
@@ -68,5 +63,6 @@ export default function() {
             <Stack.Screen name="Contact" component={ContactScreen} />
           </Stack.Navigator>
         </NavigationContainer>
+        </SyncProvider>
     );
 }
