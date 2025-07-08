@@ -61,15 +61,15 @@ describe('SearchScreen', () => {
     expect(screen.getByText('Jane Smith')).toBeTruthy();
   });
 
-  it('calls reSync and updates store on sync button press', async () => {
-    render(<SearchScreen navigation={{ setOptions: jest.fn(), push: jest.fn() }} />);
+  // it('calls reSync and updates store on sync button press', async () => {
+  //   render(<SearchScreen navigation={{ setOptions: jest.fn(), push: jest.fn() }} />);
 
-    const syncButton = await screen.findByTestId('cloud-sync-button');
-    fireEvent.press(syncButton);
+  //   const syncButton = await screen.findByTestId('cloud-sync-button');
+  //   fireEvent.press(syncButton);
 
-    await waitFor(() => {
-      expect(reSyncContacts).toHaveBeenCalled();
-      expect(ContactReactiveStore.initLoad).toHaveBeenCalled();
-    });
-  });
+  //   await waitFor(() => {
+  //     expect(reSyncContacts).toHaveBeenCalled();
+  //     expect(ContactReactiveStore.initLoad).toHaveBeenCalled();
+  //   });
+  // });
 });

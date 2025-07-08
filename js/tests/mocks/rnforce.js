@@ -1,4 +1,5 @@
 let dummyContacts = [];
+
 console.log('🚀 rnforce mock loaded');
 
 module.exports = {
@@ -23,5 +24,37 @@ module.exports = {
       );
       success();
     }),
+  },
+
+  mobilesync: {
+    MERGE_MODE: { OVERWRITE: 'overwrite' },
+
+    syncUp: jest.fn((
+      isGlobalStore,
+      target,
+      soupName,
+      options,
+      success,
+      error
+    ) => {
+      // Simulate Salesforce accepting local records
+      success({ totalSize: dummyContacts.length });
+    }),
+
+    reSync: jest.fn((
+      isGlobalStore,
+      syncName,
+      success,
+      error
+    ) => {
+      // Simulate downloading updated records
+      success(); // Could also return data if needed
+    }),
+  },
+
+  oauth: {
+    getAuthCredentials: jest.fn((success) => success()),
+    authenticate: jest.fn((success) => success()),
+    logout: jest.fn(),
   }
 };
