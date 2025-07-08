@@ -14,7 +14,10 @@ const SearchScreen = ({ navigation, style }) => {
     filter,
     setSearchFilter,
     addContact,
-    deleteContact
+    deleteContact,
+  syncContacts: reSyncContacts
+
+    
   } = ContactViewModel();
   const { syncState } = useSyncContext();
     
@@ -57,8 +60,8 @@ console.log('SearchScreen syncState', syncState);
   const onAdd = () => {
     const dummyContact = {
       Id: `local_${Date.now()}`,
-      FirstName: 'Add',
-      LastName: 'mukh',
+      FirstName: 'swetha',
+      LastName: 'ccfs',
       Title: 'Dev',
       Email: 'john.oe@example.com',
       MobilePhone: '123-456-7866',
@@ -73,10 +76,14 @@ console.log('SearchScreen syncState', syncState);
     addContact(dummyContact);
   };
 
-  const onSync = () => {
-    // If you want to trigger reSync manually, call your StoreMgr here
-    // e.g. StoreMgr.reSyncData();
-  };
+  // const onSync = () => {
+  //   // If you want to trigger reSync manually, call your StoreMgr here
+  //   // e.g. StoreMgr.reSyncData();
+  //   reSyncContacts()
+  // };
+  const onSync =()=> {
+   reSyncContacts(); // 🔁 Calls SmartStore sync logic
+};
 
   const onLogout = () => {
     Alert.alert(

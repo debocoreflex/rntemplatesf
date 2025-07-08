@@ -35,6 +35,9 @@ export function ContactViewModel() {
   const deleteContact = (contact) => {
     ContactReactiveStore.deleteContact(contact);
   };
+  const syncContacts = async () => {
+    await ContactReactiveStore.performSync(); // ✅ SYNC triggered
+  };
 
   return {
     contacts,
@@ -42,5 +45,7 @@ export function ContactViewModel() {
     setSearchFilter,
     addContact,
     deleteContact,
+    syncContacts
   };
+  
 }

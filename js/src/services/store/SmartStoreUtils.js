@@ -1,9 +1,14 @@
-import { smartstore } from 'react-native-force';
+//import { smartstore } from 'react-native-force';
+import {smartstore, mobilesync, forceUtil} from 'react-native-force';
 import ContactReactiveStore from './ContactReactiveStore';
 
 
 
 let isSoupRegistered = false;
+
+let syncInFlight = false;
+const syncName = "mobileSyncExplorerSyncDown";
+
 
 export async function getContactsFromSmartStore() {
   if (!isSoupRegistered) {
@@ -83,3 +88,68 @@ export function deleteContact(contact, successCallback, errorCallback) {
                               successCallback,
                               errorCallback);
 }
+
+export function syncUpContacts() {
+  if (syncInFlight) {
+    console.log("Not starting syncUp - sync already in flight");
+    return Promise.resolve();
+  }
+
+  console.log("Starting syncUp");
+  syncInFlight = true;
+
+  const fieldlist = ["FirstName", "LastName", "Title", "Email", "MobilePhone", "Department"];
+
+  return new Promise((resolve, reject) => {
+    mobilesync.syncUp(
+      false,                              // isGlobalStore
+      {},                                 // target (default: everything changed locally)
+      "contacts",                         // soupName
+      {
+        mergeMode: mobilesync.MERGE_MODE.OVERWRITE,
+        fieldlist: fieldlist,
+      },
+      (syncResult) => {
+        console.log("syncUp completed");
+        console.log("📊 Records Synced:", syncResult?.totalSize);
+        syncInFlight = false;
+        ContactReactiveStore.initLoad();  // 🔁 Refresh observable list
+        resolve();
+      },
+      (err) => {
+        console.error("syncUp failed", err);
+        syncInFlight = false;
+        reject(err);
+      }
+    );
+  });
+}
+
+export function reSyncContacts() {
+  if (syncInFlight) {
+    console.log("Not starting reSync - sync already in flight");
+    return Promise.resolve();
+  }
+
+  console.log("Starting reSync");
+  syncInFlight = true;
+
+  return new Promise((resolve, reject) => {
+    mobilesync.reSync(
+      false,             // isGlobalStore
+      syncName,    // syncName used in syncDown
+      () => {
+        console.log("reSync completed");
+        syncInFlight = false;
+        ContactReactiveStore.initLoad();  // 🔁 Refresh observable list
+        resolve();
+      },
+      (err) => {
+        console.error("reSync failed", err);
+        syncInFlight = false;
+        reject(err);
+      }
+    );
+  });
+}
+
