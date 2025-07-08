@@ -35,7 +35,7 @@ const SearchScreen = ({ navigation, style }) => {
       headerRight: () => (
         <View style={styles.navButtonsGroup}>
           <NavImgButton icon='add' onPress={onAdd} />
-          <NavImgButton icon='cloud-sync' iconType='material-community' onPress={onSync} />
+          <NavImgButton icon='cloud-sync' iconType='material-community'   testID='cloud-sync-button' onPress={onSync} />
           <NavImgButton icon='logout' iconType='material-community' onPress={onLogout} />
         </View>
       ),
