@@ -34,6 +34,14 @@ jest.mock('../../src/viewmodels/ContactViewModel', () => ({
   })
 }));
 
+jest.mock('../../src/common/reducers/SyncContext', () => ({
+  useSyncContext: () => ({
+    syncState: { isLoading: false, isSynced: true },
+    dataSynced: jest.fn(),
+    logout: jest.fn(),
+  }),
+}));
+
 describe('SearchScreen', () => {
   it('should display dummy contact list', () => {
     render(<SearchScreen navigation={{ setOptions: jest.fn(), push: jest.fn() }} />);
