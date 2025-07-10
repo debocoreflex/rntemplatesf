@@ -34,6 +34,9 @@ import StoreMgr from './src/services/store/StoreMgr';
 import ContactReactiveStore from './src/services/store/ContactReactiveStore';
 import { SyncProvider } from './src/common/reducers/SyncContext';
 
+import { oauth } from 'react-native-force'; // Ensure this is imported correctly
+import { UserStoreManager } from './src/managers/UserStoreManager';
+
 const Stack = createStackNavigator();
 
 export default function() {
@@ -43,6 +46,21 @@ export default function() {
   }
 
   initializeContacts();
+}, []);
+React.useEffect(() => {
+  oauth.getAuthCredentials(
+  async (creds) => {
+    const userId = creds?.userId;
+    try {
+      const result = await UserStoreManager.syncData(userId);
+      console.log('🟢 User Sync Result:', result);
+    } catch (e) {
+      console.error('❌ Sync error:', e);
+    }
+  },
+  (err) => {
+    console.error('❌ Failed to get auth credentials:', err);
+  });
 }, []);
 
 
