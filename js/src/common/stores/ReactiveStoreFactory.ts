@@ -1,5 +1,10 @@
 import { BehaviorSubject } from 'rxjs';
 import { saveContact,deleteContact, getContactsFromSmartStore, syncUpContacts, reSyncContacts } from '../../services/store/SmartStoreUtils';
+import { OperationQueue } from '../../operations/OperationQueue';
+import { SyncOperationManager } from '../../operations/SyncOperationManager';
+const queue = new OperationQueue();
+const manager = new SyncOperationManager(queue);
+
 
 export function ReactiveStoreFactory({ soupName, filterKeys }: { soupName: string; filterKeys: string[] }) {
   const subject = new BehaviorSubject<any[]>([]);
@@ -41,16 +46,27 @@ export function ReactiveStoreFactory({ soupName, filterKeys }: { soupName: strin
       applyFilter();
     });
   }
+  // async function performSync() {
+  //   console.log('[ReactiveStore] performSync called');
+  //   try {
+  //     // await syncUpContacts();
+  //     // await reSyncContacts();
+    
+  //     await syncUpContacts().then(() => {reSyncContacts()});
+  //   } catch (error) {
+  //     console.error('[ReactiveStore] performSync failed', error);
+  //   }
+  // }
+
   async function performSync() {
-    console.log('[ReactiveStore] performSync called');
-    try {
-      // await syncUpContacts();
-      // await reSyncContacts();
-      await syncUpContacts().then(() => {reSyncContacts()});
-    } catch (error) {
-      console.error('[ReactiveStore] performSync failed', error);
-    }
+  console.log('[performSync] triggered');
+  try {
+    manager.syncUp();
+    manager.reSync();
+  } catch (error) {
+    console.error('[performSync] failed', error);
   }
+}
 
   return {
     getObservable: () => subject.asObservable(),
