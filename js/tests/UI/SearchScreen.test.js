@@ -4,8 +4,9 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react-native';
 
 import SearchScreen from '../../src/views/SearchScreen';
-import { reSyncContacts } from '../../src/services/store/SmartStoreUtils';
+import { reSyncContacts, syncUpContacts } from '../../src/services/store/SmartStoreUtils';
 import ContactReactiveStore from '../../src/services/store/ContactReactiveStore';
+const mockPerformSync = jest.fn();
 
 jest.mock('../../src/viewmodels/ContactViewModel', () => ({
   ContactViewModel: () => ({
@@ -33,6 +34,7 @@ jest.mock('../../src/viewmodels/ContactViewModel', () => ({
     setSearchFilter: jest.fn(),
     addContact: jest.fn(),
     deleteContact: jest.fn(),
+    syncContacts: mockPerformSync,
   })
 }));
 
@@ -59,6 +61,16 @@ describe('SearchScreen', () => {
     expect(screen.getByPlaceholderText('Search a contact...')).toBeTruthy();
     //expect(screen.getByText('Add mukh')).toBeTruthy();
     expect(screen.getByText('Jane Smith')).toBeTruthy();
+  });
+   it('should trigger performSync when Sync button is pressed', async () => {
+    render(<SearchScreen navigation={{ setOptions: jest.fn(), push: jest.fn() }} />);
+    
+    const syncButton = screen.getByTestId('cloud-sync-button');
+    fireEvent.press(syncButton);
+
+    await waitFor(() => {
+      expect(mockPerformSync).toHaveBeenCalled();
+    });
   });
 
   // it('calls reSync and updates store on sync button press', async () => {

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef,useState,useContext } from 'react';
 import { Alert, View, FlatList, Keyboard } from 'react-native';
-import { SearchBar } from 'react-native-elements';
+import { Button, SearchBar } from 'react-native-elements';
 import { oauth } from 'react-native-force';
 import styles from './Styles';
 import NavImgButton from './NavImgButton';
@@ -35,7 +35,7 @@ const SearchScreen = ({ navigation, style }) => {
       headerRight: () => (
         <View style={styles.navButtonsGroup}>
           <NavImgButton icon='add' onPress={onAdd} />
-          <NavImgButton icon='cloud-sync' iconType='material-community'   testID='cloud-sync-button' onPress={onSync} />
+          <NavImgButton icon='cloud-sync' iconType='material-community'   onPress={onSync} />
           <NavImgButton icon='logout' iconType='material-community' onPress={onLogout} />
         </View>
       ),
@@ -114,6 +114,7 @@ console.log('SearchScreen syncState', syncState);
 
   return (
     <View testID="root-view" style={style}>
+      <Button title="Sync" testID='cloud-sync-button' onPress={onSync} />
       <SearchBar
         lightTheme
         autoCorrect={false}
