@@ -27,6 +27,7 @@ export function ReactiveStoreFactory({ soupName, filterKeys }: { soupName: strin
     try {
       const items = await getContactsFromSmartStore(); // or use soupName if needed
       allItems = items;
+      //console.log(`init load [${soupName}] Loaded: ${JSON.stringify(items)}`);
       applyFilter();
     } catch (error) {
       console.error(`[${soupName}] Failed to load data`, error);

@@ -62,12 +62,31 @@ export async function getContactsFromSmartStore() {
 // }
 
 export function saveContact(contact, callback) {
-    smartstore.upsertSoupEntries(false, "contacts", [contact],
-                                 () => {
-                                     callback();
-                                   //  emitSmartStoreChanged();
-                                      ContactReactiveStore.initLoad(); 
-                                 });
+    // smartstore.upsertSoupEntries(false, "contacts", [contact],
+    //                              () => {
+    //                                  callback();
+    //                                //  emitSmartStoreChanged();
+    //                                   ContactReactiveStore.initLoad(); 
+    //                              });
+  console.log("Contacts pushed ", contact);
+
+    smartstore.upsertSoupEntries(
+    false,  // Assuming this is a flag for whether to overwrite or not
+    "contacts",  // The soup name
+    [contact],  // The contact data
+    (response) => {
+      // Success callback
+      console.log("Contact saved successfully:", response);
+      callback();  // Invoke the callback on success
+      ContactReactiveStore.initLoad();  // Reload data
+    },
+    (error) => {
+      // Failure callback
+      console.error("Failed to save contact:", error);
+      // Optionally call the callback here with a failure status if needed
+      callback(error);  // Pass the error to the callback if necessary
+    }
+  );
 }
 
 function addContact(successCallback, errorCallback) {

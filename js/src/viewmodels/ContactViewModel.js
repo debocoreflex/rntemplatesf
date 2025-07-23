@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
 import ContactReactiveStore from '../services/store/ContactReactiveStore';
 import { useSyncContext } from '../common/reducers/SyncContext';
+import { RepositoryFactory } from '../dbops/RepositoryFactory';
+import { ContactEntity } from '../dbops/models/ContactEnitity';
+const contactRepo = RepositoryFactory.contactRepository();
+
 export function ContactViewModel() {
   const [contacts, setContacts] = useState([]);
   const [filter, setFilterState] = useState('');
@@ -29,7 +33,29 @@ export function ContactViewModel() {
   };
 
   const addContact = (contact) => {
-    ContactReactiveStore.addContact(contact);
+  const {
+    Id,
+    FirstName,
+    LastName,
+    Email,
+    MobilePhone,
+    Title,
+    Department
+  } = contact;
+
+    const contactEntity = new ContactEntity(
+    Id,           // Id (String)
+    FirstName,    // FirstName (String)
+    MobilePhone,  // MobilePhone (String)
+    LastName,     // LastName (String | undefined)
+    Email,        // Email (String | undefined)
+    Title,        // Title (String | undefined)
+    Department    // Department (String | undefined)
+  );
+
+    
+  contactRepo.save(contactEntity);
+
   };
 
   const deleteContact = (contact) => {
