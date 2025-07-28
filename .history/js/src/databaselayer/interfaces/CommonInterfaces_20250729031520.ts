@@ -31,7 +31,7 @@ export interface IDatabaseRead<T> {
   getById(id: string): Promise<T | null>;
   getAll(): Promise<T[]>;
   query(queryParams: GenericQueryParams): Promise<T[]>;
-  getUserData( query:GenericQueryParams): Promise<User | null>;
+  getUserData( query:GenericQueryParams): Promise<T[]>;
 }
 
 export interface IRepository<T> extends IDatabaseWrite<T>, IDatabaseRead<T> {}

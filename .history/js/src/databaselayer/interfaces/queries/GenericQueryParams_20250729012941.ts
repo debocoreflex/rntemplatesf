@@ -2,44 +2,16 @@
 
 export type SortDirection = 'ASC' | 'DESC';
 
-
 export interface GenericQueryParams {
-  queryType: QueryType;
-
-  // For exact, like, match, range
-  indexPath?: string;
-
-  // For exact/match/like
-  matchKey?: string;
-  likeKey?: string;
-
-  // For range
-  beginKey?: string;
-  endKey?: string;
-
-  // Sorting
-  orderPath?: string;
-  order?: 'ascending' | 'descending';
-
-  // Pagination
-  pageSize?: number;
-
-  // For SmartSQL queries
-  smartSql?: string;
-
-  // Optional projected fields (for SmartSQL or partial queries)
-  selectPaths?: string[];
-
-  table?: string; // For SOQL-like queries
-  fields?: string[]; // Fields to select in SOQL-like queries
-  filters?: FilterCondition[][]; // Filters for SOQL-like queries
-  limit?: number; // Limit for SOQL-like queries
-
-  searchText?: string; // For complex search queries
-
-   // For specifying the store configuration
-
-  soupName?: string; // For specifying the soup name in SmartStore queries
+  table: string; // soupName or Realm class or Salesforce object
+  fields?: string[]; // optional - e.g., ['Id', 'Name']
+  filters?: Array<[string, '=' | '!=' | 'IN' | 'LIKE', any]>; // e.g., ['Id', '=', '123'], ['Status', 'IN', ['A','B']]
+  searchText?: string; // used for full-text or name match
+  orderBy?: string; // single field name
+  orderDirection?: 'ASC' | 'DESC'; // default 'ASC'
+  limit?: number;
+  offset?: number; // for pagination if needed
+  rawQuery?: string; // for advanced use cases like SmartSQL/ SOQL string override
 }
 
 export interface FilterCondition {

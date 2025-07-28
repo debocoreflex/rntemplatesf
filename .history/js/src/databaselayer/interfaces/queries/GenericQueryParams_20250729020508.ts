@@ -36,10 +36,6 @@ export interface GenericQueryParams {
   limit?: number; // Limit for SOQL-like queries
 
   searchText?: string; // For complex search queries
-
-   // For specifying the store configuration
-
-  soupName?: string; // For specifying the soup name in SmartStore queries
 }
 
 export interface FilterCondition {

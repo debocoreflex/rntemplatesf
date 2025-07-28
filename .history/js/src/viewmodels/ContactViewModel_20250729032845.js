@@ -72,8 +72,8 @@ getUserDatas();
 
 };
 const getUserDatas= async()=>{
- await userRepo.getUserData({
-  soupName: 'contacts',
+ await userRepo.fetchSingle({
+  soupName: 'users',
   storeConfig: false,
   orderPath: 'Id',
   pageSize: 100,

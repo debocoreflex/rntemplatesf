@@ -37,7 +37,7 @@ export interface GenericQueryParams {
 
   searchText?: string; // For complex search queries
 
-   // For specifying the store configuration
+  storeConfig?: any; // For specifying the store configuration
 
   soupName?: string; // For specifying the soup name in SmartStore queries
 }

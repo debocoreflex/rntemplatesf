@@ -1,4 +1,3 @@
-import { User } from "../entities/UserEnitiies";
 import { GenericQueryParams } from "./queries/GenericQueryParams";
 
 export interface IWrite<T> {
@@ -31,7 +30,7 @@ export interface IDatabaseRead<T> {
   getById(id: string): Promise<T | null>;
   getAll(): Promise<T[]>;
   query(queryParams: GenericQueryParams): Promise<T[]>;
-  getUserData( query:GenericQueryParams): Promise<User | null>;
+  getUserData(): Promise<T[]>;
 }
 
 export interface IRepository<T> extends IDatabaseWrite<T>, IDatabaseRead<T> {}

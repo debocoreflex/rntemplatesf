@@ -34,12 +34,6 @@ export interface GenericQueryParams {
   fields?: string[]; // Fields to select in SOQL-like queries
   filters?: FilterCondition[][]; // Filters for SOQL-like queries
   limit?: number; // Limit for SOQL-like queries
-
-  searchText?: string; // For complex search queries
-
-   // For specifying the store configuration
-
-  soupName?: string; // For specifying the soup name in SmartStore queries
 }
 
 export interface FilterCondition {
