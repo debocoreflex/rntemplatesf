@@ -215,16 +215,3 @@ export async function searchContactsComplex(queryId, query, successCallback, err
   );
 }
 
-function traverseCursor(accumulatedResults, cursor, pageIndex, successCallback, errorCallback) {
-    accumulatedResults = accumulatedResults.concat(cursor.currentPageOrderedEntries);
-    if (pageIndex < cursor.totalPages - 1) {
-        smartstore.moveCursorToPageIndex(false, cursor, pageIndex + 1,
-                                         (cursor) => {
-                                             traverseCursor(accumulatedResults, cursor, pageIndex + 1, successCallback, errorCallback);
-                                         },
-                                         errorCallback);
-    }
-    else {
-        successCallback(accumulatedResults);
-    }
-}

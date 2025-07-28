@@ -1,32 +1,10 @@
 import { IWrite, IRead, IQuery } from "../interfaces/CommonInterfaces";
-import { getContactsFromSmartStore, saveContact,searchContactsComplex } from '../../services/store/SmartStoreUtils';
-import { GenericQueryParams } from "../interfaces/queries/GenericQueryParams";
-
-
+import { getContactsFromSmartStore, saveContact } from '../../services/store/SmartStoreUtils';
+import { GenericQueryParams } from "./queries/GenericQueryParams";
 
 export abstract  class BaseRepository<T> implements IWrite<T>, IRead<T>, IQuery<T> {
-   
     query(params: GenericQueryParams): Promise<T[]> {
-       const { searchText } = params;
-
-    return new Promise((resolve, reject) => {
-      if (!searchText) {
-        return reject('No search text provided for complex search');
-      }
-
-      searchContactsComplex(
-        '001E000001KnMkTIAV',
-        searchText,
-        (results) => {
-          //resolve(results as ContactEntity[]);
-          console.log(`Complex search results: ${JSON.stringify(results)}`);
-        },
-        (error) => {
-          reject(error);
-        }
-      );
-    });
-  
+        throw new Error("Method not implemented.");
     }
     //write operations
     create(item: T): Promise<boolean> {
@@ -66,6 +44,3 @@ export abstract  class BaseRepository<T> implements IWrite<T>, IRead<T>, IQuery<
     
 
 }
-
-
-

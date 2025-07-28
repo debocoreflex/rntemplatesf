@@ -1,4 +1,4 @@
-import { GenericQueryParams } from "./queries/GenericQueryParams";
+import { GenericQueryParams } from "../repositories/queries/GenericQueryParams";
 
 export interface IWrite<T> {
   create(item: T): Promise<boolean>;

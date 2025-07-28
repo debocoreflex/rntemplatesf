@@ -1,11 +1,10 @@
 import { IWrite, IRead, IQuery } from "../interfaces/CommonInterfaces";
 import { getContactsFromSmartStore, saveContact,searchContactsComplex } from '../../services/store/SmartStoreUtils';
-import { GenericQueryParams } from "../interfaces/queries/GenericQueryParams";
+import { GenericQueryParams } from "./queries/GenericQueryParams";
 
 
 
 export abstract  class BaseRepository<T> implements IWrite<T>, IRead<T>, IQuery<T> {
-   
     query(params: GenericQueryParams): Promise<T[]> {
        const { searchText } = params;
 
@@ -15,7 +14,7 @@ export abstract  class BaseRepository<T> implements IWrite<T>, IRead<T>, IQuery<
       }
 
       searchContactsComplex(
-        '001E000001KnMkTIAV',
+        'customQuery1',
         searchText,
         (results) => {
           //resolve(results as ContactEntity[]);

@@ -1,6 +1,6 @@
 import { CommonEntity } from "../../entities/CommonEntity";
 import { BaseRepository } from "../BaseRepository";
-import { GenericQueryParams } from "../../interfaces/queries/GenericQueryParams";
+import { GenericQueryParams } from "../queries/GenericQueryParams";
 
 //purpose: This repository is specifically for handling Contact entities.
 //it extends the BaseRepository to inherit common database operations.

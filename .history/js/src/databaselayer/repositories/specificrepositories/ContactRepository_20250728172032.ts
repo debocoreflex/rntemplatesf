@@ -1,6 +1,5 @@
 import { CommonEntity } from "../../entities/CommonEntity";
 import { BaseRepository } from "../BaseRepository";
-import { GenericQueryParams } from "../../interfaces/queries/GenericQueryParams";
 
 //purpose: This repository is specifically for handling Contact entities.
 //it extends the BaseRepository to inherit common database operations.
@@ -14,7 +13,5 @@ export class ContactRepository extends BaseRepository<CommonEntity> {
     update(id: string, item: CommonEntity): Promise<boolean> {
         throw new Error("Method not implemented.");
     }
-
-   
 }
 

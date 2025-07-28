@@ -1,6 +1,6 @@
 import { IWrite, IRead, IQuery } from "../interfaces/CommonInterfaces";
 import { getContactsFromSmartStore, saveContact,searchContactsComplex } from '../../services/store/SmartStoreUtils';
-import { GenericQueryParams } from "../interfaces/queries/GenericQueryParams";
+import { GenericQueryParams } from "./queries/GenericQueryParams";
 
 
 
