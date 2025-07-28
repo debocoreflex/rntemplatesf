@@ -4,8 +4,8 @@ import { useSyncContext } from '../common/reducers/SyncContext';
 import { ContactRepository } from '../databaselayer/repositories/specificrepositories/ContactRepository';
 import { CommonEntity } from '../databaselayer/entities/CommonEntity';
 
-// initializing the repository
-const repository = new ContactRepository();
+    // initializing the repository
+    const repository = new ContactRepository();
 
 export function ContactViewModel() {
   const [contacts, setContacts] = useState([]);
@@ -17,10 +17,10 @@ export function ContactViewModel() {
 
     const subscription = ContactReactiveStore.getObservable().subscribe(contacts => {
       if (contacts && contacts.length > 0) {
-
+       
         setContacts(contacts);
-        // syncContext.dataSynced(); // ✅ This sets isSynced = true
-        dataSynced(); // ✅ Updates shared sync state
+       // syncContext.dataSynced(); // ✅ This sets isSynced = true
+         dataSynced(); // ✅ Updates shared sync state
       }
     });
 
@@ -36,29 +36,29 @@ export function ContactViewModel() {
   };
 
   const addContact = (contact) => {
-    const {
-      Id,
-      FirstName,
-      LastName,
-      Email,
-      MobilePhone,
-      Title,
-      Department
-    } = contact;
+  const {
+    Id,
+    FirstName,
+    LastName,
+    Email,
+    MobilePhone,
+    Title,
+    Department
+  } = contact;
 
     const contactEntity = new CommonEntity(
-      Id,
-      FirstName,
-      Email,
-      LastName,
-      Title,
-      MobilePhone,
-      Department
-    );
+    Id,           
+    FirstName,    
+    LastName,     
+    Title,       
+    Email,       
+    MobilePhone,    
+    Department
+  );
 
-    repository.save(contactEntity);
-    //contactRepo.save(contactEntity);
-
+  repository.save(contactEntity);
+  //contactRepo.save(contactEntity);
+  
 
   };
 
@@ -77,5 +77,5 @@ export function ContactViewModel() {
     deleteContact,
     syncContacts
   };
-
+  
 }

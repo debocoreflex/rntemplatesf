@@ -60,7 +60,7 @@ console.log('SearchScreen syncState', syncState);
   const onAdd = () => {
     const dummyContact = {
       Id: `local_${Date.now()}`,
-      FirstName: 'amo',
+      FirstName: 'abstrac',
       LastName: 'ccfs',
       Title: 'Dev',
       Email: 'john.oe@example.com',
