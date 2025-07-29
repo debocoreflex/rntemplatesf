@@ -7,7 +7,7 @@ export interface IWrite<T> {
   update(id: string, item: T): Promise<boolean>;
   delete(id: string): Promise<boolean>;
   save:(item:T) => Promise<void>;
-  addWithType: (item: T, type: EntityType) => Promise<T>;
+  addWithType: (item: T, type: string) => Promise<T>;
   addAllWithType: (items: T[], type: EntityType) => Promise<void>;
 }
 export interface IRead<T> {

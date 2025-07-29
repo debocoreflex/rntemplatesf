@@ -1,5 +1,4 @@
 import { User } from "../entities/UserEnitiies";
-import { EntityType } from "../repositories/BaseRepository";
 import { GenericQueryParams } from "./queries/GenericQueryParams";
 
 export interface IWrite<T> {
@@ -7,8 +6,8 @@ export interface IWrite<T> {
   update(id: string, item: T): Promise<boolean>;
   delete(id: string): Promise<boolean>;
   save:(item:T) => Promise<void>;
-  addWithType: (item: T, type: EntityType) => Promise<T>;
-  addAllWithType: (items: T[], type: EntityType) => Promise<void>;
+  addWithType: (item: T, type: string) => Promise<void>;
+  addAllWithType: (items: T[], type: string) => Promise<void>;
 }
 export interface IRead<T> {
   get(id: string): Promise<T | null>;

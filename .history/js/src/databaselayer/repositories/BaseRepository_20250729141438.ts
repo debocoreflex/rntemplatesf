@@ -19,26 +19,12 @@ type AddFn<T> = (entry: T, callback: (response?: any) => void) => void;
  * @typeParam T - Entity type (e.g., User, Contact)
  */
 export abstract class BaseRepository<T> implements IWrite<T>, IRead<T>, IQuery<T>, IDatabaseRead<T> {
-
-    // ────────────────────────
+   
+     // ────────────────────────
     // Write Operations
     // ────────────────────────
 
-    /**
-    * and annotates it with Salesforce-specific metadata based on its domain type.
-    * 
-    * This method serves as a flexible entry point for saving various domain entities
-    * (like contacts, users, etc.) by dynamically selecting the appropriate save function 
-    * based on the `EntityType`.
-    *
-    * @param item - The domain object to be saved (e.g., a Contact or User).
-    * @param type - The Salesforce entity type that defines the structure (e.g., 'contact', 'user').
-    * @returns A promise that resolves to the saved item (or the SmartStore response),
-    * or rejects with an error if the save fails.
-    *
-    * @example
-    * const savedContact = await contactRepo.addWithType(contact, 'contact');
-     */
+   
     async addWithType(item: T, type: EntityType): Promise<T> {
         const entry = {
             ...item,
@@ -64,7 +50,7 @@ export abstract class BaseRepository<T> implements IWrite<T>, IRead<T>, IQuery<T
 
     addAllWithType: (items: T[], type: string) => Promise<void>;
 
-
+  
     /**
      * Create a new entity record.
      * @param item - The item to create.
